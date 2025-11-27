@@ -4,9 +4,10 @@ import { ChamadosController } from './chamados.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Chamado } from './entities/chamado.entity';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
+import { Setor } from 'src/setor/entities/setor.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Chamado, Usuario])],
+  imports: [TypeOrmModule.forFeature([Chamado, Usuario, Setor])],
   controllers: [ChamadosController],
   providers: [ChamadosService],
 })

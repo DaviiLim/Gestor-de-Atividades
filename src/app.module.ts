@@ -5,6 +5,7 @@ import { ChamadosModule } from './chamados/chamados.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { AuthModule } from './auth/auth.module';
+import { SetorModule } from './setor/setor.module';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { AuthModule } from './auth/auth.module';
     port: 3306,
     username: 'nest',
     password: 'nest123',
-    database: 'api_atividades',
+    database: 'db_api_atividades',
     autoLoadEntities: true,
     synchronize: true,
   }),
@@ -24,7 +25,11 @@ import { AuthModule } from './auth/auth.module';
     
     UsuariosModule,
     
-    AuthModule],
+    AuthModule,
+    
+    SetorModule,
+        
+    ],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -25,4 +25,16 @@ export class CreateChamadoDto {
     @IsNumber() 
     usuarioId: number;
 
+    @IsNotEmpty()
+    @IsNumber() 
+    setorId: number;
+
+    @IsString()
+    @IsOptional()
+    startDate: string;
+
+    @IsString()
+    @IsOptional()
+    endDate: string;
+
 }

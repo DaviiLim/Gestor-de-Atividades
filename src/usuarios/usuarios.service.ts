@@ -39,31 +39,27 @@ export class UsuariosService {
   }
 
   async findOne(id: number) {
-    await this.usuarioExiste(id);
-    return this.usuariosRepository.findOneBy({ id });
+    const usuario = await this.usuariosRepository.findOneBy({id});
+
+    if (!usuario) {
+      throw new NotFoundException( `Usuário not found! ID: ${id}` );
+    } 
+
+    return usuario;
   }
 
   async update(id: number, dto: UpdateUsuarioDto) {
-    await this.usuarioExiste(id);
+    await this.findOne(id);
     await this.usuariosRepository.update(id, dto);
-    return this.findOne(id);
+    return await this.findOne(id);
   }
 
   async remove(id: number) {
-    await this.usuarioExiste(id);
+    await this.findOne(id);
     await this.usuariosRepository.delete(id);
     return ;
   }
 
-  async usuarioExiste(id: number) {
-  const usuario = await this.usuariosRepository.findOneBy({ id });
-
-  if (!usuario) {
-    throw new NotFoundException(`Usuário not found! ID: ${id}`);
-  }
-
-  return usuario;
-  }
 
   async findByEmail(email: string) {
     const usuario = await this.usuariosRepository.findOne({ 

@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Chamado } from './entities/chamado.entity';
 import { In, Repository } from 'typeorm';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
+import { Setor } from 'src/setor/entities/setor.entity';
 
 @Injectable()
 export class ChamadosService {
@@ -15,7 +16,10 @@ export class ChamadosService {
     private chamadosRepository: Repository<Chamado>,
 
     @InjectRepository(Usuario)
-    private usuariosRepository: Repository<Usuario>
+    private usuariosRepository: Repository<Usuario>,
+
+    @InjectRepository(Setor)
+    private setorRepository: Repository<Setor>
 
   ) {}
 
@@ -31,11 +35,18 @@ export class ChamadosService {
     throw new NotFoundException(`Usuário not found! ID: ${createChamadoDto.usuarioId}`);
   }
 
+  const setor = await this.setorRepository.findOne({
+    where: { id: createChamadoDto.setorId }
+  });
+
+  if (!setor) {
+    throw new NotFoundException(`Setor not found! ID: ${createChamadoDto.setorId}`);
+  }
+
   const chamado = this.chamadosRepository.create({
-    title: createChamadoDto.title,
-    description: createChamadoDto.description,
-    status: createChamadoDto.status || StatusChamado.ABERTO, 
-    usuario
+    ...createChamadoDto,
+    usuario,
+    setor
   });
 
   return this.chamadosRepository.save(chamado);
@@ -57,15 +68,11 @@ export class ChamadosService {
   }
 
   async update(id: number, dto: UpdateChamadoDto) {
-    
-    const chamado = await this.findOne(id);
 
-    if (!chamado) {
-      throw new NotFoundException( `Chamado not found! ID: ${id}` );
-    }
-    
+    await this.findOne(id);
     await this.chamadosRepository.update(id, dto);
-    return this.findOne(id);
+
+    return await this.findOne(id);
   }
 
   async remove(id: number) {

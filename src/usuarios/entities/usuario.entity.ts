@@ -1,5 +1,6 @@
 import { Chamado } from "src/chamados/entities/chamado.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { roleUsuario } from "../dto/create-usuario.dto";
 
 @Entity('usuarios')
 export class Usuario {
@@ -15,6 +16,12 @@ export class Usuario {
 
     @Column( {select: false} )
     password: string;
+
+    @Column({
+        type: 'enum',
+        enum: roleUsuario,
+    })
+    role: roleUsuario;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
