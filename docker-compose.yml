@@ -4,11 +4,14 @@ services:
     container_name: mysql_nest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: db_api_atividades
-      MYSQL_USER: nest
-      MYSQL_PASSWORD: nest123
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "3306:3306"
+      - "${DB_PORT}:3306"
     volumes:
-      - /var/lib/mysql
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:

@@ -6,20 +6,26 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { AuthModule } from './auth/auth.module';
 import { SetorModule } from './setor/setor.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    
-    TypeOrmModule.forRoot({
-    type: 'mysql',
-    host: 'localhost',
-    port: 3306,
-    username: 'nest',
-    password: 'nest123',
-    database: 'db_api_atividades',
-    autoLoadEntities: true,
-    synchronize: true,
-  }),
+
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+  
+TypeOrmModule.forRoot({
+  type: 'mysql',
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  autoLoadEntities: true,
+  synchronize: true, // Vou retirar isso em depois!
+}),
+
     
     ChamadosModule,
     
