@@ -1,4 +1,4 @@
-import { IsEmpty, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export enum StatusChamado {
 
@@ -23,7 +23,11 @@ export class CreateChamadoDto {
 
     @IsNotEmpty()
     @IsNumber() 
-    usuarioId: number;
+    tecnicoId: number;
+
+    @IsNotEmpty()
+    @IsNumber()
+    requerenteId: number;
 
     @IsNotEmpty()
     @IsNumber() 

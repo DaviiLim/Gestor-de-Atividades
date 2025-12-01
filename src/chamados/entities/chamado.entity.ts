@@ -1,7 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Setor } from "src/setor/entities/setor.entity";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { StatusChamado } from "../dto/create-chamado.dto";
 import { Usuario } from "src/usuarios/entities/usuario.entity";
-import { Setor } from "src/setor/entities/setor.entity";
 
 @Entity('chamados')
 export class Chamado {
@@ -40,11 +40,16 @@ export class Chamado {
      })
     status: string;
 
+    @ManyToOne(() => Usuario, usuario => usuario.id, { eager: true })
+    @JoinColumn({ name: 'tecnico_id' })
+    tecnico: Usuario;
+
+    @ManyToOne(() => Usuario, usuario => usuario.id, { eager: true })
+    @JoinColumn({ name: 'requerente_id' })
+    requerente: Usuario;
+
     @ManyToOne(() => Setor, setor => setor.chamados, { eager: true })
     @JoinColumn({ name: 'setor_id' })
     setor: Setor;   
-    
-    @ManyToOne(() => Usuario, usuario => usuario.chamados, { eager: true })
-    @JoinColumn({ name: 'usuario_id' })
-    usuario: Usuario;
+
 }

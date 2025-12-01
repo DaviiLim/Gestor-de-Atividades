@@ -1,10 +1,6 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString, MinLength } from "class-validator";
-
-export enum roleUsuario {
-    REQUERENTE = 'requerente',
-    TECNICO = 'técnico',
-    ADMIN = 'admin',
-}
+import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsString, MinLength } from "class-validator";
+import { OneToMany } from "typeorm";
+import { Usuario } from "../entities/usuario.entity";
 
 export class CreateUsuarioDto {
 
@@ -21,8 +17,8 @@ export class CreateUsuarioDto {
     @IsNotEmpty()
     password: string;
 
-    @IsEnum(roleUsuario)
+    @IsNumber()
     @IsNotEmpty()
-    role: roleUsuario;
+    roleId: number;
 
 }

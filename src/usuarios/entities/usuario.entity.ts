@@ -1,6 +1,6 @@
 import { Chamado } from "src/chamados/entities/chamado.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { roleUsuario } from "../dto/create-usuario.dto";
+import { Role } from "src/roles/entities/role.entity";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('usuarios')
 export class Usuario {
@@ -17,12 +17,6 @@ export class Usuario {
     @Column( {select: false} )
     password: string;
 
-    @Column({
-        type: 'enum',
-        enum: roleUsuario,
-    })
-    role: roleUsuario;
-
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
 
@@ -33,6 +27,14 @@ export class Usuario {
     })
     updatedAt: Date;
 
-    @OneToMany(() => Chamado, chamado => chamado.usuario)
-    chamados: Chamado[];
+    @OneToMany(() => Chamado, chamado => chamado.tecnico)
+    tecnico: Usuario[];
+
+    @OneToMany(() => Chamado, chamado => chamado.requerente)
+    requerente: Usuario[];
+
+    @ManyToOne(() => Role, role => role.usuarios, {eager: false})
+    @JoinColumn({ name: 'role_id' })
+    role: Role; 
+
 }

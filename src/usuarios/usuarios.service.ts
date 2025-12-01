@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Usuario } from './entities/usuario.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import bcrypt from 'node_modules/bcryptjs';
+import { Role } from 'src/roles/entities/role.entity';
 
 @Injectable()
 export class UsuariosService {
@@ -12,7 +13,9 @@ export class UsuariosService {
   constructor(
 
     @InjectRepository(Usuario)
-    private usuariosRepository: Repository<Usuario>
+    private usuariosRepository: Repository<Usuario>,
+    @InjectRepository(Role)
+    private roleRepository: Repository<Role>
   
   ) {}
 
@@ -20,6 +23,14 @@ export class UsuariosService {
 
     const hash = await bcrypt.hash(createUsuarioDto.password, 10);
     const emailExiste = await this.usuariosRepository.findOneBy({ email: createUsuarioDto.email });
+
+    const role = await this.roleRepository.findOne({
+      where: {id: createUsuarioDto.roleId}
+    })
+
+    if (!role) {
+      throw new NotFoundException(`Role not found! ID: ${createUsuarioDto.roleId}`);
+    }
     
     if (emailExiste) {
       throw new ConflictException(`Email already in use! Email: ${createUsuarioDto.email}`);
@@ -28,6 +39,7 @@ export class UsuariosService {
     const usuario = this.usuariosRepository.create(
       {
         ...createUsuarioDto,
+        role,
         password: hash
       }
     )
@@ -64,7 +76,7 @@ export class UsuariosService {
   async findByEmail(email: string) {
     const usuario = await this.usuariosRepository.findOne({ 
       where: { email }, 
-      select: ['id', 'email', 'fullName', 'password']
+      select: ['id', 'email', 'fullName','role', 'password']
     });
     
     if (!usuario) {

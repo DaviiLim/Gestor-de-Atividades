@@ -7,6 +7,7 @@ import { UsuariosModule } from './usuarios/usuarios.module';
 import { AuthModule } from './auth/auth.module';
 import { SetorModule } from './setor/setor.module';
 import { ConfigModule } from '@nestjs/config';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -34,6 +35,8 @@ TypeOrmModule.forRoot({
     AuthModule,
     
     SetorModule,
+    
+    RolesModule,
         
     ],
   controllers: [AppController],

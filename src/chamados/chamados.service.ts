@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateChamadoDto, StatusChamado } from './dto/create-chamado.dto';
 import { UpdateChamadoDto } from './dto/update-chamado.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -24,15 +24,21 @@ export class ChamadosService {
   ) {}
 
  async create(createChamadoDto: CreateChamadoDto) {
-  const usuario = await this.usuariosRepository.findOne({ 
-    
-    where: { id: createChamadoDto.usuarioId },
-    select: ['id', 'fullName', 'email']
 
-  });
-  
-  if (!usuario) {
-    throw new NotFoundException(`Usuário not found! ID: ${createChamadoDto.usuarioId}`);
+  const tecnico = await this.usuariosRepository.findOne({
+    where: {id: createChamadoDto.tecnicoId},
+  })
+
+  if (!tecnico) {
+    throw new NotFoundException(`Técnico not found! ID: ${createChamadoDto.tecnicoId}`);
+  }
+
+  const requerente = await this.usuariosRepository.findOne({
+    where: {id: createChamadoDto.tecnicoId},
+  })
+
+  if (!requerente) {
+    throw new NotFoundException(`Requerente not found! ID: ${createChamadoDto.requerenteId}`);
   }
 
   const setor = await this.setorRepository.findOne({
@@ -45,13 +51,13 @@ export class ChamadosService {
 
   const chamado = this.chamadosRepository.create({
     ...createChamadoDto,
-    usuario,
+    tecnico,
+    requerente,
     setor
   });
 
   return this.chamadosRepository.save(chamado);
 }
-
 
   async findAll() {
     return this.chamadosRepository.find();
