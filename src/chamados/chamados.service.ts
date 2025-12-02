@@ -27,17 +27,19 @@ export class ChamadosService {
 
   const tecnico = await this.usuariosRepository.findOne({
     where: {id: createChamadoDto.tecnicoId},
+    relations: ['role']
   })
 
-  if (!tecnico) {
+  if (!tecnico || tecnico.role.name.toUpperCase() !== 'TÉCNICO') {
     throw new NotFoundException(`Técnico not found! ID: ${createChamadoDto.tecnicoId}`);
   }
 
   const requerente = await this.usuariosRepository.findOne({
-    where: {id: createChamadoDto.tecnicoId},
+    where: {id: createChamadoDto.requerenteId},
+    relations: ['role']
   })
 
-  if (!requerente) {
+  if (!requerente || requerente.role.name.toUpperCase() !== 'REQUERENTE') {
     throw new NotFoundException(`Requerente not found! ID: ${createChamadoDto.requerenteId}`);
   }
 

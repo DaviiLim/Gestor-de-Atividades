@@ -47,11 +47,14 @@ export class UsuariosService {
   }
 
   async findAll() {
-    return await this.usuariosRepository.find();
+    return await this.usuariosRepository.find({relations: ['role']});
   }
 
   async findOne(id: number) {
-    const usuario = await this.usuariosRepository.findOneBy({id});
+    const usuario = await this.usuariosRepository.findOne({
+      where: {id},
+      relations: ['role']
+    });
 
     if (!usuario) {
       throw new NotFoundException( `Usuário not found! ID: ${id}` );
