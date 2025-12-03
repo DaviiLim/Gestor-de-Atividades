@@ -2,6 +2,7 @@ import { Setor } from "src/setor/entities/setor.entity";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { StatusChamado } from "../dto/create-chamado.dto";
 import { Usuario } from "src/usuarios/entities/usuario.entity";
+import { Requerente } from "src/requerentes/entities/requerente.entity";
 
 @Entity('chamados')
 export class Chamado {
@@ -44,9 +45,9 @@ export class Chamado {
     @JoinColumn({ name: 'tecnico_id' })
     tecnico: Usuario;
 
-    @ManyToOne(() => Usuario, usuario => usuario.id, { eager: true })
+    @ManyToOne(() => Requerente, requerente => requerente.id, { eager: true })
     @JoinColumn({ name: 'requerente_id' })
-    requerente: Usuario;
+    requerente: Requerente;
 
     @ManyToOne(() => Setor, setor => setor.chamados, { eager: true })
     @JoinColumn({ name: 'setor_id' })

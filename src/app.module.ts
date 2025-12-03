@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { SetorModule } from './setor/setor.module';
 import { ConfigModule } from '@nestjs/config';
 import { RolesModule } from './roles/roles.module';
+import { RequerentesModule } from './requerentes/requerentes.module';
 
 @Module({
   imports: [
@@ -37,6 +38,8 @@ TypeOrmModule.forRoot({
     SetorModule,
     
     RolesModule,
+    
+    RequerentesModule,
         
     ],
   controllers: [AppController],

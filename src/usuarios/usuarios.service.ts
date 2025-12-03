@@ -43,7 +43,7 @@ export class UsuariosService {
         password: hash
       }
     )
-    return await this.usuariosRepository.save(usuario);;
+    return await this.usuariosRepository.save(usuario);
   }
 
   async findAll() {
@@ -79,7 +79,8 @@ export class UsuariosService {
   async findByEmail(email: string) {
     const usuario = await this.usuariosRepository.findOne({ 
       where: { email }, 
-      select: ['id', 'email', 'fullName','role', 'password']
+      select: ['id', 'email', 'fullName','role', 'password', 'role'],
+      relations: ['role']
     });
     
     if (!usuario) {

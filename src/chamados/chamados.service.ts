@@ -1,11 +1,12 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, Req } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Setor } from 'src/setor/entities/setor.entity';
+import { Usuario } from 'src/usuarios/entities/usuario.entity';
+import { Repository } from 'typeorm';
 import { CreateChamadoDto, StatusChamado } from './dto/create-chamado.dto';
 import { UpdateChamadoDto } from './dto/update-chamado.dto';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Chamado } from './entities/chamado.entity';
-import { In, Repository } from 'typeorm';
-import { Usuario } from 'src/usuarios/entities/usuario.entity';
-import { Setor } from 'src/setor/entities/setor.entity';
+import { Requerente } from 'src/requerentes/entities/requerente.entity';
 
 @Injectable()
 export class ChamadosService {
@@ -17,6 +18,9 @@ export class ChamadosService {
 
     @InjectRepository(Usuario)
     private usuariosRepository: Repository<Usuario>,
+
+    @InjectRepository(Requerente)
+    private requerenteRepository: Repository<Requerente>,
 
     @InjectRepository(Setor)
     private setorRepository: Repository<Setor>
@@ -34,12 +38,10 @@ export class ChamadosService {
     throw new NotFoundException(`Técnico not found! ID: ${createChamadoDto.tecnicoId}`);
   }
 
-  const requerente = await this.usuariosRepository.findOne({
+  const requerente = await this.requerenteRepository.findOne({
     where: {id: createChamadoDto.requerenteId},
-    relations: ['role']
   })
-
-  if (!requerente || requerente.role.name.toUpperCase() !== 'REQUERENTE') {
+  if (!requerente) {
     throw new NotFoundException(`Requerente not found! ID: ${createChamadoDto.requerenteId}`);
   }
 

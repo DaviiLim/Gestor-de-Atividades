@@ -30,9 +30,6 @@ export class Usuario {
     @OneToMany(() => Chamado, chamado => chamado.tecnico)
     tecnico: Usuario[];
 
-    @OneToMany(() => Chamado, chamado => chamado.requerente)
-    requerente: Usuario[];
-
     @ManyToOne(() => Role, role => role.usuarios, {eager: false})
     @JoinColumn({ name: 'role_id' })
     role: Role; 
