@@ -17,24 +17,24 @@ export class AuthService {
 
     const usuario = await this.usuariosService.findByEmail(email);
 
+    if (!usuario) {
+      throw new UnauthorizedException('Invalid credentials! User not found.');
+    }
+
     const senhaCorreta = await bcrypt.compare(password, usuario.password);
     if (!senhaCorreta) {
       throw new UnauthorizedException('Invalid credentials! Password incorrect.');
-    
-    }
-    if (!usuario) {
-      throw new UnauthorizedException('Invalid credentials! User not found.');
     }
 
     return {
       id: usuario.id,
       email: usuario.email,
       fullName: usuario.fullName,
-      role: usuario.role
+      role: usuario.role.name
     }
   }
 
-  async signIn (signupDto: SignupDto) {
+  async register (signupDto: SignupDto) {
 
     const usuario = await this.usuariosService.create(signupDto);
 
@@ -42,14 +42,14 @@ export class AuthService {
       id: usuario.id,
       email: usuario.email,
       fullName: usuario.fullName,
-      role: usuario.role
+      role: usuario.role.name
     })
 
     
   }
   async login (usuario: {id:number, email:string, fullName:string, role:any}) {
     
-    const payload = { sub: usuario.id, email: usuario.email, fullName: usuario.fullName, role: usuario.role.name };
+    const payload = { sub: usuario.id, email: usuario.email, fullName: usuario.fullName, role: usuario.role };
 
     return {
       access_token: this.jwtService.sign(payload),

@@ -1,11 +1,8 @@
 # API e Projeto Checklist
 
 ## 1. Revisão do Checklist
-- [ ] Conferir todas as entidades e seus relacionamentos
-- [ ] Validar campos obrigatórios e opcionais
-- [ ] Verificar default values (ex: roleId default, status de Chamado)
+- [ ] Olhar comenários
 - [ ] Confirmar regras de cascade onde necessário
-- [ ] Revisar DTOs e validações com class-validator
 - [ ] Testar endpoints CRUD de cada entidade
 - [ ] Conferir se os dados sensíveis não estão sendo retornados (ex: senha)
 
