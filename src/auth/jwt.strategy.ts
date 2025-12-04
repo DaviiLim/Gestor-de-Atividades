@@ -12,7 +12,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         ({
             secretOrKey: config.getOrThrow('JWT_SECRET'),
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            ignoreExpiration: true // tem que ser alterado
+            ignoreExpiration: false
         });    
     }
 
@@ -23,7 +23,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         fullName: payload.fullName,
         role: payload.role
     };
-}
+    }
 
-    
 }

@@ -6,6 +6,7 @@ import { Usuario } from './entities/usuario.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import bcrypt from 'node_modules/bcryptjs';
 import { Role } from 'src/roles/entities/role.entity';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class UsuariosService {
@@ -15,7 +16,9 @@ export class UsuariosService {
     @InjectRepository(Usuario)
     private usuariosRepository: Repository<Usuario>,
     @InjectRepository(Role)
-    private roleRepository: Repository<Role>
+    private roleRepository: Repository<Role>,
+
+    private mailService: MailService
   
   ) {}
 
@@ -43,7 +46,12 @@ export class UsuariosService {
         password: hash
       }
     )
-    return await this.usuariosRepository.save(usuario);
+
+    await this.usuariosRepository.save(usuario)
+    await this.mailService.newUser(usuario, role)
+    await this.mailService.sendWelcomeEmail(usuario.email, usuario.fullName)
+
+    return usuario;
   }
 
   async findAll() {

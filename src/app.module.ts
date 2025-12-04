@@ -9,6 +9,7 @@ import { SetorModule } from './setor/setor.module';
 import { ConfigModule } from '@nestjs/config';
 import { RolesModule } from './roles/roles.module';
 import { RequerentesModule } from './requerentes/requerentes.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -40,6 +41,8 @@ TypeOrmModule.forRoot({
     RolesModule,
     
     RequerentesModule,
+    
+    MailModule,
         
     ],
   controllers: [AppController],
