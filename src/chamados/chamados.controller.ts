@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { ChamadosService } from './chamados.service';
 import { CreateChamadoDto } from './dto/create-chamado.dto';
 import { UpdateChamadoDto } from './dto/update-chamado.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('chamados')
+@UseGuards(JwtAuthGuard)
 export class ChamadosController {
   constructor(private readonly chamadosService: ChamadosService) {}
 

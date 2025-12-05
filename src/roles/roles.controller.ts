@@ -14,25 +14,21 @@ export class RolesController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   findAll() {
     return this.rolesService.findAll();
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
   findOne(@Param('id') id: string) {
     return this.rolesService.findOne(+id);
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
   update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
     return this.rolesService.update(+id, updateRoleDto);
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
   remove(@Param('id') id: string) {
     return this.rolesService.remove(+id);
   }

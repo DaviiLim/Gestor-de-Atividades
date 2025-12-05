@@ -7,6 +7,7 @@ import { CreateChamadoDto, StatusChamado } from './dto/create-chamado.dto';
 import { UpdateChamadoDto } from './dto/update-chamado.dto';
 import { Chamado } from './entities/chamado.entity';
 import { Requerente } from 'src/requerentes/entities/requerente.entity';
+import { time24h } from 'src/utils/date.util';
 
 @Injectable()
 export class ChamadosService {
@@ -33,7 +34,6 @@ export class ChamadosService {
     where: {id: createChamadoDto.tecnicoId},
     relations: ['role']
   })
-
   if (!tecnico || tecnico.role.name.toUpperCase() !== 'TÉCNICO') {
     throw new NotFoundException(`Técnico not found! ID: ${createChamadoDto.tecnicoId}`);
   }
@@ -48,7 +48,6 @@ export class ChamadosService {
   const setor = await this.setorRepository.findOne({
     where: { id: createChamadoDto.setorId }
   });
-
   if (!setor) {
     throw new NotFoundException(`Setor not found! ID: ${createChamadoDto.setorId}`);
   }
@@ -57,7 +56,15 @@ export class ChamadosService {
     ...createChamadoDto,
     tecnico,
     requerente,
-    setor
+    setor,
+    startDate: createChamadoDto.startDate
+      ? new Date(createChamadoDto.startDate)
+      : new Date()
+      ,
+    endDate: createChamadoDto.endDate
+      ? new Date(createChamadoDto.endDate)
+      : time24h()
+    
   });
 
   return this.chamadosRepository.save(chamado);

@@ -1,9 +1,9 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsString, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsNumber, IsString, Matches, MinLength } from "class-validator";
 
 export class CreateUsuarioDto {
 
     @IsString()
-    @IsNotEmpty()
+    @IsNotEmpty( {message: 'fullName cannot be empty!'} )
     fullName: string;
 
     @IsEmail()
@@ -13,6 +13,7 @@ export class CreateUsuarioDto {
     @IsString()
     @MinLength(6)
     @IsNotEmpty()
+    @Matches(/^\S*$/, { message: 'password cannot have spaces' })
     password: string;
 
     @IsNumber()

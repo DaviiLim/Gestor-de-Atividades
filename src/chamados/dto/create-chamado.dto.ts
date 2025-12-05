@@ -35,10 +35,10 @@ export class CreateChamadoDto {
 
     @IsString()
     @IsOptional()
-    startDate: string;
+    startDate?: string;
 
     @IsString()
     @IsOptional()
-    endDate: string;
+    endDate?: string;
 
 }
