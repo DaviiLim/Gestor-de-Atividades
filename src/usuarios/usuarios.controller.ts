@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, ParseIntPipe } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
@@ -13,6 +13,11 @@ export class UsuariosController {
   create(@Body() createUsuarioDto: CreateUsuarioDto) {
     return this.usuariosService.create(createUsuarioDto);
   }
+  
+  @Get('email')
+  findByEmail(@Query('email') email: string){
+    return this.usuariosService.findByEmail(email)
+  }
 
   @Get()
   findAll() {
@@ -20,7 +25,7 @@ export class UsuariosController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseIntPipe) id: string) {
     return this.usuariosService.findOne(+id);
   }
 
@@ -33,10 +38,4 @@ export class UsuariosController {
   remove(@Param('id') id: string) {
     return this.usuariosService.remove(+id);
   }
-
-  @Get('email/:email')
-  findByEmail(@Param('email') email: string){
-    return this.usuariosService.findByEmail(email)
-  }
-
 }

@@ -49,10 +49,10 @@ export class MailService {
   `;
 
   return this.transporter.sendMail({
-    from: process.env.EMAIL_FROM,
+    from: process.env.EMAIL_FROM_NEWUSER,
     to: process.env.SMTP_USER,
     subject: 'Novo usuário cadastrado',
-    html,
+    html, 
   });
 }
 }
