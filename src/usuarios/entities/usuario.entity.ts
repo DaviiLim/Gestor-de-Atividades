@@ -27,8 +27,11 @@ export class Usuario {
     })
     updatedAt: Date;
 
+    @OneToMany(() => Chamado, chamado => chamado.closedBy)
+    closedChamados: Chamado[];
+
     @OneToMany(() => Chamado, chamado => chamado.tecnico)
-    tecnico: Usuario[];
+    chamados_como_tecnico: Usuario[];
 
     @ManyToOne(() => Role, role => role.usuarios, {eager: false})
     @JoinColumn({ name: 'role_id' })

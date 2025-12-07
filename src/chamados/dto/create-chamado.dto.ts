@@ -3,7 +3,7 @@ import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-valida
 export enum StatusChamado {
 
     ABERTO = 'ABERTO',
-    CONCLUIDO = 'CONCLUIDO',
+    CONCLUIDO = 'CONCLUÍDO',
 
 }
 

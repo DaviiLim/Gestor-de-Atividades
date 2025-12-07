@@ -83,7 +83,6 @@ export class UsuariosService {
     return ;
   }
 
-
   async findByEmail(email: string) {
     const usuario = await this.usuariosRepository.findOne({ 
       where: { email }, 
@@ -94,7 +93,6 @@ export class UsuariosService {
     if (!usuario) {
       throw new NotFoundException(`Usuário not found! Email: ${email}`);
     }
-
     return usuario;
   }
 

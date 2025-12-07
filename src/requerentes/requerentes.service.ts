@@ -21,7 +21,7 @@ export class RequerentesService {
     const setor = await this.setorRepository.findOneBy({ id: createRequerenteDto.setorId });
 
     if (!setor){
-       throw new NotFoundException(`Técnico not found! ID: ${createRequerenteDto.setorId}`);
+       throw new NotFoundException(`Setor not found! ID: ${createRequerenteDto.setorId}`);
     }
 
     const requerente = {

@@ -41,6 +41,10 @@ export class Chamado {
      })
     status: string;
 
+    @ManyToOne(() => Usuario, usuario => usuario.id, {nullable: true, eager: true })
+    @JoinColumn({ name: 'tecnico_finalizador_id' })
+    closedBy: Usuario;
+
     @ManyToOne(() => Usuario, usuario => usuario.id, { eager: true })
     @JoinColumn({ name: 'tecnico_id' })
     tecnico: Usuario;

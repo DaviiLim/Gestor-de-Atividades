@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, Req } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, Req } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Setor } from 'src/setor/entities/setor.entity';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
@@ -8,6 +8,7 @@ import { UpdateChamadoDto } from './dto/update-chamado.dto';
 import { Chamado } from './entities/chamado.entity';
 import { Requerente } from 'src/requerentes/entities/requerente.entity';
 import { time24h } from 'src/utils/date.util';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class ChamadosService {
@@ -24,7 +25,9 @@ export class ChamadosService {
     private requerenteRepository: Repository<Requerente>,
 
     @InjectRepository(Setor)
-    private setorRepository: Repository<Setor>
+    private setorRepository: Repository<Setor>,
+
+    private mailService: MailService
 
   ) {}
 
@@ -98,8 +101,31 @@ export class ChamadosService {
   }
 
 
-async fecharChamado(id: number) {
-  await this.findOne(id);
-  return this.update(id, { status: StatusChamado.CONCLUIDO });
+async fecharChamado(id: number , tecnicoId: number) {
+  let chamado = await this.findOne(id);
+
+  const tecnico_finalizador = await this.usuariosRepository.findOne({
+    where: { id: tecnicoId },
+    select: ['id','email', 'fullName']
+  });
+
+  if (!tecnico_finalizador) {
+    throw new NotFoundException(`Técnico ${tecnicoId} não encontrado.`);
+  }
+
+
+  if (chamado.status === StatusChamado.CONCLUIDO) {
+    throw new ConflictException('Chamado is already CONCLUÍDO')
+  }
+
+  chamado.status = StatusChamado.CONCLUIDO
+  chamado.closedBy = tecnico_finalizador
+  
+  await this.chamadosRepository.save(chamado)
+
+  chamado.closedBy = tecnico_finalizador
+
+  this.mailService.alertTaskDone(tecnico_finalizador.email, chamado.tecnico.fullName, tecnico_finalizador.fullName, chamado)
+  return this.findOne(id);
 }
 }

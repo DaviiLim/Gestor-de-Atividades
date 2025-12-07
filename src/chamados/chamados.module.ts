@@ -6,9 +6,10 @@ import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { ChamadosController } from './chamados.controller';
 import { ChamadosService } from './chamados.service';
 import { Chamado } from './entities/chamado.entity';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Chamado, Usuario, Setor, Requerente])],
+  imports: [TypeOrmModule.forFeature([Chamado, Usuario, Setor, Requerente]), MailModule],
   controllers: [ChamadosController],
   providers: [ChamadosService],
 })

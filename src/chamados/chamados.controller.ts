@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntPipe, Req } from '@nestjs/common';
 import { ChamadosService } from './chamados.service';
 import { CreateChamadoDto } from './dto/create-chamado.dto';
 import { UpdateChamadoDto } from './dto/update-chamado.dto';
@@ -20,22 +20,25 @@ export class ChamadosController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseIntPipe) id: string) {
     return this.chamadosService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateChamadoDto: UpdateChamadoDto) {
+  update(@Param('id', ParseIntPipe) id: string, @Body() updateChamadoDto: UpdateChamadoDto) {
     return this.chamadosService.update(+id, updateChamadoDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseIntPipe) id: string) {
     return this.chamadosService.remove(+id);
   }
 
   @Patch('fechar/:id')
-  fecharChamado(@Param('id') id: string) {
-    return this.chamadosService.fecharChamado(+id);
+  fecharChamado(
+    @Param('id') id: number,
+    @Req() req) {
+    const tecnicoId = req.user.id; 
+    return this.chamadosService.fecharChamado(id, tecnicoId);
   }
 }

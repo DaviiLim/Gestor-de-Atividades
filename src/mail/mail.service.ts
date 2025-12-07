@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
+import { Chamado } from 'src/chamados/entities/chamado.entity';
 import { Role } from 'src/roles/entities/role.entity';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 
@@ -22,13 +23,13 @@ export class MailService {
   async sendWelcomeEmail(to: string, name: string) {
     const html = `
       <h2>Olá, ${name}!</h2>
-      <p>Seu cadastro foi realizado com sucesso!</p>
+      <p>Seu cadastro foi realizado!</p>
     `;
 
     return this.transporter.sendMail({
       from: process.env.EMAIL_FROM,
       to,
-      subject: 'Cadastro realizado com sucesso!',
+      subject: 'Cadastro realizado com sucesso',
       html,
     });
   }
@@ -38,7 +39,7 @@ export class MailService {
 
   const html = `
     <h1>Atenção</h1>
-    <h3>Um novo usuário foi cadastrado!</h3>
+    <h3>Um novo usuário foi cadastrado.</h3>
 
     <p><strong>Nome:</strong> ${usuario.fullName}</p>
     <p><strong>Email:</strong> ${usuario.email}</p>
@@ -51,8 +52,64 @@ export class MailService {
   return this.transporter.sendMail({
     from: process.env.EMAIL_FROM_NEWUSER,
     to: process.env.SMTP_USER,
-    subject: 'Novo usuário cadastrado',
+    subject: 'Novo usuário cadastrado.',
     html, 
   });
-}
+  }
+
+  async roleUpdated(to: string, name: string) {
+
+  const html = `
+    <h2>Olá, ${name}!</h2>
+    <p>Seu cargo foi atualizado.</p>
+  `;
+
+  return this.transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to,
+    subject: 'Cargo realizado com sucesso.',
+    html,
+    });
+  }
+
+    async newtask(to: string, name: string) {
+    const html = `
+      <h2>Olá, ${name}!</h2>
+      <p>Novo chamado registrado!</p>
+    `;
+
+    return this.transporter.sendMail({
+      from: process.env.EMAIL_FROM,
+      to,
+      subject: 'Um novo chamado foi registrado com sucesso',
+      html,
+    });
+  }
+
+  async alertTaskDone(to: string, name: string, tecnico_finalizador: string, chamado: Chamado, ) {
+
+  const html = `
+    <h2>Olá, ${name}!</h2>
+    <p>Chamado Concluído!</p>
+
+    <p>Id:</strong> ${chamado.id}</p>
+    <p>Título:</strong> ${chamado.title}</p>
+    <p>Descrição:</strong> ${chamado.description}</p>
+    <p>Requerente:<strong> ${chamado.requerente.name}<p>
+    <p>Setor:</strong> ${chamado.setor.name}</p>
+    <p>Status:</strong> ${chamado.status}</p>
+    <p>Data de Início:</strong> ${chamado.startDate}</p>
+    <p>Data de Fim:</strong> ${chamado.endDate}</p>
+
+    <p>Finalizado por:<strong> ${tecnico_finalizador}<p>
+  `;
+
+  return this.transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to,
+    subject: 'Seu chamado',
+    html,
+    });
+  }
+
 }
