@@ -30,7 +30,7 @@ export class Usuario {
     @OneToMany(() => Chamado, chamado => chamado.closedBy)
     closedChamados: Chamado[];
 
-    @OneToMany(() => Chamado, chamado => chamado.tecnico)
+    @OneToMany(() => Chamado, chamado => chamado.openedBy)
     chamados_como_tecnico: Usuario[];
 
     @ManyToOne(() => Role, role => role.usuarios, {eager: false})

@@ -1,5 +1,11 @@
 import { IsNotEmpty, IsString } from "class-validator";
-import { Usuario } from "src/usuarios/entities/usuario.entity";
+
+export enum RoleUsuarios{
+
+  TECNICO = 'TECNICO',
+  TECNICO_ACENTUADO = 'TÉCNICO'
+
+}
 
 export class CreateRoleDto {
 

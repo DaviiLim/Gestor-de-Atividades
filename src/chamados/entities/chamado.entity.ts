@@ -47,7 +47,7 @@ export class Chamado {
 
     @ManyToOne(() => Usuario, usuario => usuario.id, { eager: true })
     @JoinColumn({ name: 'tecnico_id' })
-    tecnico: Usuario;
+    openedBy: Usuario;
 
     @ManyToOne(() => Requerente, requerente => requerente.id, { eager: true })
     @JoinColumn({ name: 'requerente_id' })

@@ -9,6 +9,7 @@ import { Chamado } from './entities/chamado.entity';
 import { Requerente } from 'src/requerentes/entities/requerente.entity';
 import { time24h } from 'src/utils/date.util';
 import { MailService } from 'src/mail/mail.service';
+import { RoleUsuarios } from 'src/roles/dto/create-role.dto';
 
 @Injectable()
 export class ChamadosService {
@@ -32,18 +33,27 @@ export class ChamadosService {
   ) {}
 
  async create(createChamadoDto: CreateChamadoDto) {
-
-  const tecnico = await this.usuariosRepository.findOne({
-    where: {id: createChamadoDto.tecnicoId},
+  
+  const tecnico_criador = await this.usuariosRepository.findOne({
+    where: {id: createChamadoDto.openedById},
     relations: ['role']
   })
-  if (!tecnico || tecnico.role.name.toUpperCase() !== 'TÉCNICO') {
-    throw new NotFoundException(`Técnico not found! ID: ${createChamadoDto.tecnicoId}`);
-  }
+
+  if (
+  !tecnico_criador ||
+  (
+    tecnico_criador.role.name.toUpperCase() !== RoleUsuarios.TECNICO &&
+    tecnico_criador.role.name.toUpperCase() !== RoleUsuarios.TECNICO_ACENTUADO
+  )
+) {
+  throw new NotFoundException(`Técnico not found! ID: ${createChamadoDto.openedById}`);
+}
+
 
   const requerente = await this.requerenteRepository.findOne({
     where: {id: createChamadoDto.requerenteId},
   })
+
   if (!requerente) {
     throw new NotFoundException(`Requerente not found! ID: ${createChamadoDto.requerenteId}`);
   }
@@ -57,7 +67,7 @@ export class ChamadosService {
 
   const chamado = this.chamadosRepository.create({
     ...createChamadoDto,
-    tecnico,
+    openedBy: tecnico_criador,
     requerente,
     setor,
     startDate: createChamadoDto.startDate
@@ -69,8 +79,10 @@ export class ChamadosService {
       : time24h()
     
   });
+  await this.chamadosRepository.save(chamado)
+  await this.mailService.newtask(tecnico_criador.fullName, tecnico_criador.email)
 
-  return this.chamadosRepository.save(chamado);
+  return chamado;
 }
 
   async findAll() {
@@ -125,7 +137,9 @@ async fecharChamado(id: number , tecnicoId: number) {
 
   chamado.closedBy = tecnico_finalizador
 
-  this.mailService.alertTaskDone(tecnico_finalizador.email, chamado.tecnico.fullName, tecnico_finalizador.fullName, chamado)
+  this.mailService.notifyCloserOnTicket(tecnico_finalizador.email, tecnico_finalizador.fullName, tecnico_finalizador.fullName, chamado)
+  this.mailService.notifyCreatorOnTicket(chamado.openedBy.email, chamado.openedBy.fullName, chamado.closedBy.fullName, chamado)
+
   return this.findOne(id);
 }
 }

@@ -23,7 +23,7 @@ export class CreateChamadoDto {
 
     @IsNotEmpty()
     @IsNumber() 
-    tecnicoId: number;
+    openedById: number;
 
     @IsNotEmpty()
     @IsNumber()

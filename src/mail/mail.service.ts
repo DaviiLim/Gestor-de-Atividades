@@ -86,11 +86,38 @@ export class MailService {
     });
   }
 
-  async alertTaskDone(to: string, name: string, tecnico_finalizador: string, chamado: Chamado, ) {
+  async notifyCreatorOnTicket(to: string, name: string, tecnico_finalizador: string, chamado: Chamado) {
 
   const html = `
     <h2>Olá, ${name}!</h2>
-    <p>Chamado Concluído!</p>
+    <p>Seu chamado foi concluído!!</p>
+
+    <p>Id:</strong> ${chamado.id}</p>
+    <p>Título:</strong> ${chamado.title}</p>
+    <p>Descrição:</strong> ${chamado.description}</p>
+    <p>Requerente:<strong> ${chamado.requerente.name}<p>
+    <p>Setor:</strong> ${chamado.setor.name}</p>
+    <p>Status:</strong> ${chamado.status}</p>
+    <p>Data de Início:</strong> ${chamado.startDate}</p>
+    <p>Data de Fim:</strong> ${chamado.endDate}</p>
+
+    <p>Finalizado por:<strong> ${tecnico_finalizador}<p>
+  `;
+
+  return this.transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to,
+    subject: 'Seu chamado',
+    html,
+    });
+
+  }
+
+  async notifyCloserOnTicket(to: string, name: string, tecnico_finalizador: string, chamado: Chamado) {
+
+  const html = `
+    <h2>Olá, ${name}!</h2>
+    <p>Chamado concluído</p>
 
     <p>Id:</strong> ${chamado.id}</p>
     <p>Título:</strong> ${chamado.title}</p>
