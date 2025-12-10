@@ -32,10 +32,10 @@ export class ChamadosService {
 
   ) {}
 
- async create(createChamadoDto: CreateChamadoDto) {
+ async create(createChamadoDto: CreateChamadoDto, tecnico_criador_Id) {
   
   const tecnico_criador = await this.usuariosRepository.findOne({
-    where: {id: createChamadoDto.openedById},
+    where: {id: tecnico_criador_Id},
     relations: ['role']
   })
 
@@ -46,9 +46,8 @@ export class ChamadosService {
     tecnico_criador.role.name.toUpperCase() !== RoleUsuarios.TECNICO_ACENTUADO
   )
 ) {
-  throw new NotFoundException(`Técnico not found! ID: ${createChamadoDto.openedById}`);
+  throw new NotFoundException(`Técnico not found! ID: ${tecnico_criador?.id}`);
 }
-
 
   const requerente = await this.requerenteRepository.findOne({
     where: {id: createChamadoDto.requerenteId},
@@ -80,7 +79,7 @@ export class ChamadosService {
     
   });
   await this.chamadosRepository.save(chamado)
-  await this.mailService.newtask(tecnico_criador.fullName, tecnico_criador.email)
+  await this.mailService.newtask(chamado)
 
   return chamado;
 }
@@ -113,16 +112,16 @@ export class ChamadosService {
   }
 
 
-async fecharChamado(id: number , tecnicoId: number) {
+async fecharChamado(id: number , tecnico_finalizador_Id: number) {
   let chamado = await this.findOne(id);
 
   const tecnico_finalizador = await this.usuariosRepository.findOne({
-    where: { id: tecnicoId },
+    where: { id: tecnico_finalizador_Id },
     select: ['id','email', 'fullName']
   });
 
   if (!tecnico_finalizador) {
-    throw new NotFoundException(`Técnico ${tecnicoId} não encontrado.`);
+    throw new NotFoundException(`Técnico ${tecnico_finalizador_Id} não encontrado.`);
   }
 
 
@@ -133,12 +132,12 @@ async fecharChamado(id: number , tecnicoId: number) {
   chamado.status = StatusChamado.CONCLUIDO
   chamado.closedBy = tecnico_finalizador
   
-  await this.chamadosRepository.save(chamado)
+  await this.chamadosRepository.save(chamado) // Vou colocar um try catch para evitar enviar email sem salvar adequadamente 
 
   chamado.closedBy = tecnico_finalizador
 
-  this.mailService.notifyCloserOnTicket(tecnico_finalizador.email, tecnico_finalizador.fullName, tecnico_finalizador.fullName, chamado)
-  this.mailService.notifyCreatorOnTicket(chamado.openedBy.email, chamado.openedBy.fullName, chamado.closedBy.fullName, chamado)
+  this.mailService.notifyCloserOnTicket(chamado)
+  this.mailService.notifyCreatorOnTicket(chamado)
 
   return this.findOne(id);
 }

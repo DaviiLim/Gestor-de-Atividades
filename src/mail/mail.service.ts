@@ -22,8 +22,13 @@ export class MailService {
 
   async sendWelcomeEmail(to: string, name: string) {
     const html = `
-      <h2>Olá, ${name}!</h2>
-      <p>Seu cadastro foi realizado!</p>
+      <h1>Olá, ${name}!</h1>
+      <p>Seu cadastro foi realizado.</p>
+
+      <p style="margin-top:20px; font-size:13px; color:#555;">
+      Sistema de Notificações<br>
+      <em>Departamento de TI</em>
+      </p>
     `;
 
     return this.transporter.sendMail({
@@ -39,14 +44,19 @@ export class MailService {
 
   const html = `
     <h1>Atenção</h1>
-    <h3>Um novo usuário foi cadastrado.</h3>
+    <h2>Um novo usuário foi cadastrado.</h2>
 
-    <p><strong>Nome:</strong> ${usuario.fullName}</p>
-    <p><strong>Email:</strong> ${usuario.email}</p>
-    <p><strong>ID:</strong> ${usuario.id}</p>
-    <p><strong>Data de Criação:<strong> ${usuario.createdAt}<p>
-    <p><strong>Função:</strong> ${role.name}</p>
-
+    <h3>Usuário:<h3>
+    <p><strong>Nome: ${usuario.fullName}</p>
+    <p><strong>Email: ${usuario.email}</p>
+    <p><strong>ID: ${usuario.id}</p>
+    <p><strong>Data de Criação: ${usuario.createdAt}<p>
+    <p><strong>Função: ${role.name}</p>
+    
+    <p style="margin-top:20px; font-size:13px; color:#555;">
+    Sistema de Notificações<br>
+    <em>Departamento de TI</em>
+    </p>
   `;
 
   return this.transporter.sendMail({
@@ -60,8 +70,13 @@ export class MailService {
   async roleUpdated(to: string, name: string) {
 
   const html = `
-    <h2>Olá, ${name}!</h2>
+    <h1>Olá, ${name}.</h1>
     <p>Seu cargo foi atualizado.</p>
+
+    <p style="margin-top:20px; font-size:13px; color:#555;">
+    Sistema de Notificações<br>
+    <em>Departamento de TI</em>
+    </p>
   `;
 
   return this.transporter.sendMail({
@@ -72,69 +87,84 @@ export class MailService {
     });
   }
 
-    async newtask(to: string, name: string) {
+    async newtask(chamado: Chamado) {
     const html = `
-      <h2>Olá, ${name}!</h2>
-      <p>Novo chamado registrado!</p>
+    <h1>Olá, ${chamado.openedBy.fullName}.</h2>
+    <p>Novo chamado registrado!</p>
+
+    <p style="margin-top:20px; font-size:13px; color:#555;">
+    Sistema de Notificações<br>
+    <em>Departamento de TI</em>
+    </p>
     `;
 
     return this.transporter.sendMail({
       from: process.env.EMAIL_FROM,
-      to,
+      to: chamado.openedBy.email,
       subject: 'Um novo chamado foi registrado com sucesso',
       html,
     });
   }
 
-  async notifyCreatorOnTicket(to: string, name: string, tecnico_finalizador: string, chamado: Chamado) {
+  async notifyCreatorOnTicket(chamado: Chamado) {
 
   const html = `
-    <h2>Olá, ${name}!</h2>
-    <p>Seu chamado foi concluído!!</p>
+    <h1>Olá, ${chamado.openedBy.fullName}!</h2>
+    <h2>Seu chamado foi concluído por ${chamado.closedBy.fullName}</h2>
 
-    <p>Id:</strong> ${chamado.id}</p>
-    <p>Título:</strong> ${chamado.title}</p>
-    <p>Descrição:</strong> ${chamado.description}</p>
-    <p>Requerente:<strong> ${chamado.requerente.name}<p>
-    <p>Setor:</strong> ${chamado.setor.name}</p>
-    <p>Status:</strong> ${chamado.status}</p>
-    <p>Data de Início:</strong> ${chamado.startDate}</p>
-    <p>Data de Fim:</strong> ${chamado.endDate}</p>
+    <h3>Chamado:<h3>
+    <p>ID: ${chamado.id}</p>
+    <p>Título: ${chamado.title}</p>
+    <p>Descrição: ${chamado.description}</p>
+    <p>Requerente: ${chamado.requerente.name}<p>
+    <p>Setor: ${chamado.setor.name}</p>
+    <p>Status: ${chamado.status}</p>
+    <p>Data de Início: ${chamado.startDate}</p>
+    <p>Data de Fim: ${chamado.endDate}</p>
 
-    <p>Finalizado por:<strong> ${tecnico_finalizador}<p>
+    <p>Concluído por: ${chamado.closedBy.fullName}<p>
+
+    <p style="margin-top:20px; font-size:13px; color:#555;">
+    Sistema de Notificações<br>
+    <em>Departamento de TI</em>
+    </p>
   `;
 
   return this.transporter.sendMail({
     from: process.env.EMAIL_FROM,
-    to,
-    subject: 'Seu chamado',
+    to: chamado.openedBy.email,
+    subject: 'Conclusão de chamado.',
     html,
     });
 
   }
 
-  async notifyCloserOnTicket(to: string, name: string, tecnico_finalizador: string, chamado: Chamado) {
+  async notifyCloserOnTicket(chamado: Chamado) {
 
   const html = `
-    <h2>Olá, ${name}!</h2>
-    <p>Chamado concluído</p>
+    <h1>Olá, ${chamado.closedBy.fullName}!</h1>
+    <h2>Você concluiu o chamado de ${chamado.openedBy.fullName}</h2>
 
-    <p>Id:</strong> ${chamado.id}</p>
-    <p>Título:</strong> ${chamado.title}</p>
-    <p>Descrição:</strong> ${chamado.description}</p>
-    <p>Requerente:<strong> ${chamado.requerente.name}<p>
-    <p>Setor:</strong> ${chamado.setor.name}</p>
-    <p>Status:</strong> ${chamado.status}</p>
-    <p>Data de Início:</strong> ${chamado.startDate}</p>
-    <p>Data de Fim:</strong> ${chamado.endDate}</p>
+    <h3>Chamado:</h3>
+    <p>ID: ${chamado.id}</p>
+    <p>Título: ${chamado.title}</p>
+    <p>Descrição: ${chamado.description}</p>
+    <p>Requerente: ${chamado.requerente.name}<p>
+    <p>Setor: ${chamado.setor.name}</p>
+    <p>Status: ${chamado.status}</p>
+    <p>Data de Início: ${chamado.startDate}</p>
+    <p>Data de Fim: ${chamado.endDate}</p>
 
-    <p>Finalizado por:<strong> ${tecnico_finalizador}<p>
+    <p style="margin-top:20px; font-size:13px; color:#555;">
+    Sistema de Notificações<br>
+    <em>Departamento de TI</em>
+    </p>
   `;
 
   return this.transporter.sendMail({
     from: process.env.EMAIL_FROM,
-    to,
-    subject: 'Seu chamado',
+    to: chamado.closedBy.email,
+    subject: 'Conclusão de chamado.',
     html,
     });
   }

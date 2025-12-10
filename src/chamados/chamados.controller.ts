@@ -10,8 +10,9 @@ export class ChamadosController {
   constructor(private readonly chamadosService: ChamadosService) {}
 
   @Post()
-  create(@Body() createChamadoDto: CreateChamadoDto) {
-    return this.chamadosService.create(createChamadoDto);
+  create(@Body() createChamadoDto: CreateChamadoDto, @Req() req) {
+     const tecnicoId = req.user.id; 
+    return this.chamadosService.create(createChamadoDto, tecnicoId);
   }
 
   @Get()

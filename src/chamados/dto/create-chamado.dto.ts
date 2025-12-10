@@ -22,10 +22,6 @@ export class CreateChamadoDto {
     status: StatusChamado;
 
     @IsNotEmpty()
-    @IsNumber() 
-    openedById: number;
-
-    @IsNotEmpty()
     @IsNumber()
     requerenteId: number;
 

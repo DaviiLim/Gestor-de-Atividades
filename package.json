@@ -6,6 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "restart:docker": "docker compose down -v && docker compose up -d",
+    "restart:all": "docker compose down -v && docker compose up -d && npm run start:dev",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
