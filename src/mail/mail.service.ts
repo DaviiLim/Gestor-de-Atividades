@@ -169,4 +169,26 @@ export class MailService {
     });
   }
 
+  async sendResetPasswordEmail(usuario: Usuario) {
+
+  const html = `
+    <h1>Olá, ${usuario.fullName}.</h1>
+    <p>Aqui está o token para redefinição de senha.</p>
+
+    <h2></h2>
+
+    <p style="margin-top:20px; font-size:13px; color:#555;">
+    Sistema de Notificações<br>
+    <em>Departamento de TI</em>
+    </p>
+  `;
+
+  return this.transporter.sendReset({
+    from: process.env.EMAIL_FROM,
+    to: usuario.email,
+    subject: 'Cargo realizado com sucesso.',
+    html,
+    });
+  }
+
 }

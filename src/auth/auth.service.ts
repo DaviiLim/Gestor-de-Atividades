@@ -3,7 +3,10 @@ import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from 'bcryptjs';
 import { UsuariosService } from "src/usuarios/usuarios.service";
 import { SignupDto } from "./dto/signup.dto";
-
+import * as crypto from "crypto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Usuario } from "src/usuarios/entities/usuario.entity";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class AuthService {
@@ -11,6 +14,9 @@ export class AuthService {
   constructor(
     private usuariosService: UsuariosService,
     private jwtService: JwtService,
+
+    @InjectRepository(Usuario)
+    private usuariosRepository: Repository<Usuario>
   ) {}
 
   async validateUser (email: string, password: string){
@@ -54,6 +60,20 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload),
     }
+
+  }
+
+  async forgotPassword(email: string ){
+
+    const usuario = await this.usuariosService.findByEmail(email);
+
+    const token = crypto.randomBytes(32).toString('hex');
+
+    usuario.resetPasswordToken = token;
+
+    await this.usuariosRepository.update(usuario.id, usuario)
+
+    return token
 
   }
 

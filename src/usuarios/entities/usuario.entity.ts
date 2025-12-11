@@ -37,4 +37,7 @@ export class Usuario {
     @JoinColumn({ name: 'role_id' })
     role: Role; 
 
+    @Column({ nullable: true })
+    resetPasswordToken: string;
+
 }
