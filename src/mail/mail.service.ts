@@ -116,7 +116,7 @@ export class MailService {
     <p>ID: ${chamado.id}</p>
     <p>Título: ${chamado.title}</p>
     <p>Descrição: ${chamado.description}</p>
-    <p>Requerente: ${chamado.requerente.name}<p>
+    <p>Requerente: ${chamado.requerente.fullName}<p>
     <p>Setor: ${chamado.setor.name}</p>
     <p>Status: ${chamado.status}</p>
     <p>Data de Início: ${chamado.startDate}</p>
@@ -149,7 +149,7 @@ export class MailService {
     <p>ID: ${chamado.id}</p>
     <p>Título: ${chamado.title}</p>
     <p>Descrição: ${chamado.description}</p>
-    <p>Requerente: ${chamado.requerente.name}<p>
+    <p>Requerente: ${chamado.requerente.fullName}<p>
     <p>Setor: ${chamado.setor.name}</p>
     <p>Status: ${chamado.status}</p>
     <p>Data de Início: ${chamado.startDate}</p>

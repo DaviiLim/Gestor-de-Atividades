@@ -42,8 +42,7 @@ export class ChamadosService {
   if (
   !tecnico_criador ||
   (
-    tecnico_criador.role.name.toUpperCase() !== RoleUsuarios.TECNICO &&
-    tecnico_criador.role.name.toUpperCase() !== RoleUsuarios.TECNICO_ACENTUADO
+    tecnico_criador.role.name.toUpperCase() !== RoleUsuarios.TECNICO
   )
 ) {
   throw new NotFoundException(`Técnico not found! ID: ${tecnico_criador?.id}`);

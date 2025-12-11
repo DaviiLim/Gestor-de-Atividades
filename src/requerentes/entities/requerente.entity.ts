@@ -9,7 +9,7 @@ export class Requerente {
     id: number;
 
     @Column()
-    name: string;
+    fullName: string;
 
     @ManyToOne(() => Setor, setor => setor.requerentes, { eager: true })
     @JoinColumn({ name: 'setor_id' })
