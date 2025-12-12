@@ -8,11 +8,14 @@ import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Usuario]),
     
+    MailModule,
+
     UsuariosModule,
 
     PassportModule,

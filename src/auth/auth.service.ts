@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from 'bcryptjs';
 import { UsuariosService } from "src/usuarios/usuarios.service";
@@ -7,6 +7,7 @@ import * as crypto from "crypto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Usuario } from "src/usuarios/entities/usuario.entity";
 import { Repository } from "typeorm";
+import { MailService } from "src/mail/mail.service";
 
 @Injectable()
 export class AuthService {
@@ -14,9 +15,11 @@ export class AuthService {
   constructor(
     private usuariosService: UsuariosService,
     private jwtService: JwtService,
+    private mailService: MailService,
 
     @InjectRepository(Usuario)
     private usuariosRepository: Repository<Usuario>
+    
   ) {}
 
   async validateUser (email: string, password: string){
@@ -68,13 +71,34 @@ export class AuthService {
     const usuario = await this.usuariosService.findByEmail(email);
 
     const token = crypto.randomBytes(32).toString('hex');
+    const tokenHas = crypto.createHash('sha256').update(token).digest('hex');
 
-    usuario.resetPasswordToken = token;
+    usuario.resetPasswordToken = tokenHas;
 
-    await this.usuariosRepository.update(usuario.id, usuario)
+    await this.usuariosRepository.save(usuario)
 
-    return token
+    await  this.mailService.sendResetPasswordEmail(usuario, tokenHas)
+  }
 
+  async resetPassword(newPassword: string, token: string){
+    const usuario = await this.usuariosRepository.findOne({
+      where: { resetPasswordToken: token},
+      select:['id','fullName', 'email','password', 'resetPasswordToken']
+    });
+
+    if (!usuario){
+      throw new BadRequestException('Token inválido ou expirado');
+    }
+
+    const salt = await bcrypt.genSalt();
+    usuario.password = await bcrypt.hash(newPassword, salt);
+    usuario.resetPasswordToken = null;
+
+    await this.usuariosRepository.save(usuario)
+
+    await this.mailService.newPassword(usuario);
+
+    return 'Senha redefinida com sucesso!';
   }
 
 }

@@ -86,7 +86,8 @@ export class UsuariosService {
   async findByEmail(email: string) {
     const usuario = await this.usuariosRepository.findOne({ 
       where: { email }, 
-      relations: ['role']
+      relations: ['role'],
+      select: ['id', 'fullName', 'email', 'password', 'role', 'resetPasswordToken']
     });
     
     if (!usuario) {

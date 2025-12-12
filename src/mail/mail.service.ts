@@ -169,13 +169,13 @@ export class MailService {
     });
   }
 
-  async sendResetPasswordEmail(usuario: Usuario) {
+  async sendResetPasswordEmail(usuario: Usuario, token: string) {
 
   const html = `
     <h1>Olá, ${usuario.fullName}.</h1>
     <p>Aqui está o token para redefinição de senha.</p>
 
-    <h2></h2>
+    <h2>${token}</h2>
 
     <p style="margin-top:20px; font-size:13px; color:#555;">
     Sistema de Notificações<br>
@@ -183,10 +183,30 @@ export class MailService {
     </p>
   `;
 
-  return this.transporter.sendReset({
+  return this.transporter.sendMail({
     from: process.env.EMAIL_FROM,
     to: usuario.email,
-    subject: 'Cargo realizado com sucesso.',
+    subject: 'Redefinição de senha.',
+    html,
+    });
+  }
+
+  async newPassword(usuario: Usuario){
+      const html = `
+    <h1>Olá, ${usuario.fullName}.</h1>
+
+    <p>Sua senha foi redefinida com sucesso!</p>
+    
+    <p style="margin-top:20px; font-size:13px; color:#555;">
+    Sistema de Notificações<br>
+    <em>Departamento de TI</em>
+    </p>
+  `;
+
+  return this.transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to: usuario.email,
+    subject: 'Redefinição de senha.',
     html,
     });
   }
